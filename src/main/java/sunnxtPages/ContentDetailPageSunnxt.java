@@ -9,10 +9,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
-import utility.BasePage;
 import utility.Log;
+import utility.WaitUtils;
 
-public class ContentDetailPageSunnxt extends BasePage {
+public class ContentDetailPageSunnxt extends WaitUtils {
     private static final Logger logger = Log.getLogger(ContentDetailPageSunnxt.class);
 
 
@@ -43,11 +43,11 @@ public class ContentDetailPageSunnxt extends BasePage {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		if(isElementPresent(playBtnLiveTV)) {
+		if(isElementDisplayed(playBtnLiveTV)) {
 			playBtnLiveTV.click();
 			logger.info("Live TV play button found, clicking...");
 
-		}else if(isElementPresent(playButton)) {
+		}else if(isElementDisplayed(playButton)) {
 			playButton.click();
 			logger.info("Regular play button found, clicking...");
 

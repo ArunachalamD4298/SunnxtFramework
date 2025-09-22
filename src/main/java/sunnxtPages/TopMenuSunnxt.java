@@ -6,9 +6,9 @@ import org.openqa.selenium.support.FindBy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import utility.BasePage;
+import utility.WaitUtils;
 
-public class TopMenuSunnxt extends BasePage {
+public class TopMenuSunnxt extends WaitUtils {
 
 	public TopMenuSunnxt(WebDriver driver) {
 		super(driver);

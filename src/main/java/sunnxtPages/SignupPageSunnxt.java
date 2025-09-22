@@ -10,9 +10,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
 
-import utility.BasePage;
+import utility.WaitUtils;
 
-public class SignupPageSunnxt extends BasePage{
+public class SignupPageSunnxt extends WaitUtils{
 
     private static final Logger logger = LogManager.getLogger(SignupPageSunnxt.class);
 
@@ -177,5 +177,16 @@ waitForElementToBeClickable(5, emailField);
 	public void createAccount() {
 		signupButton.click();
 		logger.info("User has been created");
+	}
+	
+	public boolean isAccountCreated() {
+		try {
+			createAccount();
+			return true;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
 	}
 }

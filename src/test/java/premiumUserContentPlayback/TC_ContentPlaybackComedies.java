@@ -1,19 +1,21 @@
 package premiumUserContentPlayback;
 
 import org.apache.logging.log4j.Logger;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import baseClass.TestBase;
 import sunnxtPages.ContentDetailPageSunnxt;
 import sunnxtPages.HomepageSunnxt;
 import sunnxtPages.LoginPageSunnxt;
+import sunnxtPages.PlayerControlsSunnxt;
 import sunnxtPages.TopMenuSunnxt;
-import sunnxtPages.baseFunction;
 import sunnxtPages.contentLanguageSelection;
 import utility.ExtentReportManager;
 import utility.Log;
 
-public class TC_ContentPlaybackComedies extends baseFunction{
+public class TC_ContentPlaybackComedies extends TestBase{
     private static final Logger logger = Log.getLogger(TC_ContentPlaybackComedies.class);
 
 	@BeforeMethod
@@ -48,7 +50,17 @@ public class TC_ContentPlaybackComedies extends baseFunction{
 		ContentDetailPageSunnxt cdp =new ContentDetailPageSunnxt(driver);
 		cdp.clickPlayButton();
 		
+		PlayerControlsSunnxt player = new PlayerControlsSunnxt(driver);
+
+		player.validatePlayback();
+		
 		test.pass("Playback successful in Comedies Section");
 	}
-
+	@AfterTest
+	private void tearDown() {
+		PlayerControlsSunnxt player = new PlayerControlsSunnxt(driver);
+		if(player.isVideoPlaying()) {
+			quitDriver();
+		}
+	}
 }

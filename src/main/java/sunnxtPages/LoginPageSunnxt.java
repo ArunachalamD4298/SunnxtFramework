@@ -6,11 +6,11 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.testng.Assert;
-import utility.BasePage;
-import utility.Log;
 
-public class LoginPageSunnxt extends BasePage{
+import utility.Log;
+import utility.WaitUtils;
+
+public class LoginPageSunnxt extends WaitUtils{
 
     private static final Logger logger = Log.getLogger(LoginPageSunnxt.class);
 
@@ -45,53 +45,64 @@ public class LoginPageSunnxt extends BasePage{
 
 	@FindBy (xpath = "//p[text()='Please enter password']")
 	private WebElement emptyPasswordField;
+	
+	@FindBy (xpath = "//h3[text()='Device Limit Reached']")
+	private WebElement deviceLimitPopUp ;
 
+	@FindBy (xpath ="//button[text()='Add Device']")
+	private WebElement addDeviceBtn;
+	
 	public void userDetail(String username, String password) {
+	    implicitWait(10);
+	    userIdField.sendKeys(username);
+	    logger.info("Email or Mobile Number has been entered");
 
-		implicitWait(10);
-		userIdField.sendKeys(username);
-        logger.info("Email or Mobile Number has been entered");
-        
-		passwordFied.sendKeys(password);
-        logger.info("Password has been entered");
-        
-		loginButton.click();
-        logger.info("Login button clicked");
+	    passwordFied.sendKeys(password);
+	    logger.info("Password has been entered");
 
-		
+	    loginButton.click();
+	    logger.info("Login button clicked");
 
-	    try {
-	        if (isElementPresent(invalidUserID)) {
-	            String msg = invalidUserID.getText();
-	            if (msg.contains("Please enter valid email or mobile number")) {
-                    logger.warn("Invalid email or mobile: " + msg);
+	    if (isElementVisible(5, deviceLimitPopUp)) {
+	        addDeviceBtn.click();
+	        logger.info("Device limit popup handled");
+	    }
+
+	/// Check if any known login validation element is present
+	    if (isElementVisible(3, invalidUserID) ||
+	        isElementVisible(3, uservalidation) ||
+	        isElementVisible(3, invalidPassword) ||
+	        isElementVisible(3, emptyPasswordField)) {
+
+	        try {
+	            if (isElementVisible(2, invalidUserID)) {
+	                logger.warn("Invalid email or mobile: " + invalidUserID.getText());
+	                waitForElementToBeVisible(2, invalidUserID);
+	                driver.quit();
+	            } else if (isElementVisible(2, uservalidation)) {
+	                logger.warn("User not found: " + uservalidation.getText());
+	                waitForElementToBeVisible(2, uservalidation);
+	                driver.quit();
+	            } else if (isElementVisible(2, invalidPassword)) {
+	                logger.warn("Incorrect password: " + invalidPassword.getText());
+	                waitForElementToBeVisible(2, invalidPassword);
+	                driver.quit();
+	            } else if (isElementVisible(2, emptyPasswordField)) {
+	                logger.warn("Password field empty: " + emptyPasswordField.getText());
+	                waitForElementToBeVisible(2, emptyPasswordField);
+	                driver.quit();
 	            }
-	        } else if (isElementPresent(uservalidation)) {
-	            String msg = uservalidation.getText();
-	            if (msg.contains("User does not exist. Please sign up.")) {
-                    logger.warn("User not found: " + msg);
-	            }
-	        } else if (isElementPresent(invalidPassword)) {
-	            String msg = invalidPassword.getText();
-	            if (msg.contains("Kindly verify your user id or password and try again.")) {
-                    logger.warn("Incorrect password: " + msg);
-	            }
-	        } else if (isElementPresent(invalidUserID) && isElementPresent(emptyPasswordField)) {
-	        	 logger.warn("Both Email ID and Password fields are empty." );
-	        } else if (isElementPresent(emptyPasswordField)) {
-	            String msg = emptyPasswordField.getText();
-	            if (msg.contains("Please enter password")) {
-	            	 logger.warn("Password field is empty: " + msg);
-	            }
-	        } else {
-                logger.info("User login successful with username: " + username);
+	        } catch (Exception e) {
+	            logger.error("Exception during login validation: ", e);
 	        }
 
-	    } catch (Exception e) {
-            logger.error("Exception during login validation: ", e);
- }
-
+	    } else {
+	        // No validation messages → assume login success
+	        logger.info("User login successful with username: " + username);
+	    }
 	}
+
+
 
 	public void signupPageRedirection() {
 		String expectedValidation = uservalidation.getText();
@@ -110,32 +121,32 @@ public class LoginPageSunnxt extends BasePage{
 		logger.info("Redirected to Forget Password page");
 	}
 	
-	public boolean isInvalidUserIDVisible() {
-		return isElementPresent(invalidUserID);
-	}
-	
-	public String getInvalidUserIDText() {
-		return invalidUserID.getText();
-	}
-	
-	public boolean isUserValidationVisible() {
-		return isElementPresent(uservalidation);
-	}
-	
-	public String getUserValidationVisible() {
-		return uservalidation.getText();
-	}
-	
-	public boolean isInvalidPasswordVisible() {
-		return isElementPresent(invalidPassword);
-	}
-	
-	public String getInvalidPasswordVisible() {
-		return invalidPassword.getText();
-	}
-	public boolean isEmptyPasswordVisible() {
-	    return isElementPresent(emptyPasswordField);
-	}
+//	public boolean isInvalidUserIDVisible() {
+//		return isElementPresent(invalidUserID);
+//	}
+//	
+//	public String getInvalidUserIDText() {
+//		return invalidUserID.getText();
+//	}
+//	
+//	public boolean isUserValidationVisible() {
+//		return isElementPresent(uservalidation);
+//	}
+//	
+//	public String getUserValidationVisible() {
+//		return uservalidation.getText();
+//	}
+//	
+//	public boolean isInvalidPasswordVisible() {
+//		return isElementPresent(invalidPassword);
+//	}
+//	
+//	public String getInvalidPasswordVisible() {
+//		return invalidPassword.getText();
+//	}
+//	public boolean isEmptyPasswordVisible() {
+//	    return isElementPresent(emptyPasswordField);
+//	}
 
 	public String getEmptyPasswordText() {
 	    return emptyPasswordField.getText();
